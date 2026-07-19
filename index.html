@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobConnect · Recruitment Portal</title>
+  <!-- External CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ----- external style (simulated as external) ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+
+    body {
+      background: #f4f7fc;
+      color: #060606;
+      line-height: 1.6;
+      padding: 1.5rem;
+    }
+
+    .app-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15);
+      padding: 2rem 2rem 1rem;
+    }
+
+    /* navigation */
+    .nav-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e9edf2;
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #28570b;
+      letter-spacing: -0.5px;
+    }
+    .logo i {
+      color: #28570b;
+      margin-right: 6px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.2rem;
+    }
+
+    .nav-links button {
+      background: transparent;
+      border: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #060606;
+      padding: 0.4rem 0.8rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .nav-links button:hover, .nav-links button.active {
+      background: #e6f0ff;
+      color: #28570b;
+    }
+
+    .nav-links button.active {
+      background: #28570b;
+      color: white;
+    }
+
+    /* pages */
+    .page {
+      display: none;
+      animation: fade 0.25s ease;
+    }
+
+    .page.active-page {
+      display: block;
+    }
+
+    @keyframes fade {
+      0% { opacity: 0.3; transform: translateY(4px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* cards & grid */
+    .job-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+
+    .job-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem 1.2rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+      border: 1px solid #eef2f6;
+      transition: 0.2s;
+    }
+
+    .job-card:hover {
+      border-color: #b6d0f0;
+      box-shadow: 0 12px 24px -10px rgba(10,75,122,0.08);
+    }
+
+    .job-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .company-tag {
+      color: #28570b;
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .job-meta {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.8rem 0 1rem;
+      color: #71df89;
+      font-size: 0.9rem;
+    }
+
+    .btn {
+      background: #28570b;
+      color: white;
+      border: none;
+      padding: 0.5rem 1.4rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #28570b;
+      color: #28570b;
+    }
+
+    .btn-outline:hover {
+      background: #28570b;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: scale(0.97);
+    }
+
+    /* company profile (about) */
+    .company-profile {
+      background: #f8faff;
+      border-radius: 2rem;
+      padding: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin: 1.5rem 0;
+      border: 1px solid #e2eaf5;
+    }
+
+    .company-profile img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #0a4b7a10;
+      object-fit: cover;
+    }
+
+    .profile-details {
+      flex: 1;
+    }
+
+    /* dashboard */
+    .dashboard-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .stat-card {
+      background: #f8faff;
+      padding: 1.2rem 2rem;
+      border-radius: 2rem;
+      border: 1px solid #e2eaf5;
+      min-width: 140px;
+    }
+
+    /* application interface */
+    .apply-section {
+      background: #fafcff;
+      border-radius: 2rem;
+      padding: 2rem;
+      border: 1px solid #dee9f5;
+      margin: 2rem 0;
+    }
+
+    .apply-section input, .apply-section textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #d4dfeb;
+      border-radius: 40px;
+      margin: 0.5rem 0 1rem;
+      font-size: 0.95rem;
+    }
+
+    .apply-section textarea {
+      border-radius: 20px;
+      resize: vertical;
+    }
+
+    .notification {
+      background: #28570b;
+      color: white;
+      padding: 1rem 1.6rem;
+      border-radius: 60px;
+      margin: 1.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(10,75,122,0.2);
+    }
+
+    .notification i {
+      margin-right: 12px;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      background: #f8faff;
+      padding: 1rem 1.5rem;
+      border-radius: 60px;
+      align-items: center;
+    }
+
+    .filter-bar input, .filter-bar select {
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      border: 1px solid #d4dfeb;
+      background: white;
+      flex: 1 1 160px;
+    }
+
+    .filter-bar button {
+      background: #28570b;
+      border: none;
+      color: white;
+      padding: 0.5rem 1.8rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 3rem;
+      color: #6b7a8f;
+      border-top: 1px solid #e9edf2;
+      padding-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    /* responsive */
+    @media (max-width: 640px) {
+      .app-container { padding: 1rem; }
+      .nav-bar { flex-direction: column; align-items: start; gap: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container" id="app">
+
+  <!-- navigation -->
+  <nav class="nav-bar">
+    <div class="logo"><i class="fas fa-briefcase"></i> JobConnect</div>
+    <div class="nav-links" id="navLinks">
+      <button class="active" data-page="home">Home</button>
+      <button data-page="about">About</button>
+      <button data-page="listings">Jobs</button>
+      <button data-page="details">Job Details</button>
+      <button data-page="register">Register</button>
+      <button data-page="login">Login</button>
+      <button data-page="dashboard">Dashboard</button>
+      <button data-page="contact">Contact</button>
+    </div>
+  </nav>
+
+  <!-- ========== PAGES ========== -->
+
+  <!-- HOME -->
+  <section id="page-home" class="page active-page">
+    <h2><i class="fas fa-home" style="color:#28570b;"></i> Welcome to JobConnect</h2>
+    <p style="color: #475569; max-width: 600px;">Find your next opportunity. Browse jobs, apply in one click, and track your applications.</p>
+    <div class="job-grid" id="homeJobGrid"></div>
+    <div style="margin: 1rem 0;"><button class="btn" onclick="navigateTo('listings')">View all jobs →</button></div>
+  </section>
+
+  <!-- ABOUT (company profile) -->
+  <section id="page-about" class="page">
+    <h2>About Company</h2>
+    <div class="company-profile">
+      <div><i class="fas fa-building" style="font-size: 4rem; color: #28570b;"></i></div>
+      <div class="profile-details">
+        <h3>JobConnect Inc.</h3>
+        <p><i class="fas fa-map-pin"></i> 101 Career Plaza, Remote · 500+ employees</p>
+        <p>We connect talent with top companies. Our mission is to make hiring human and efficient. Since 2020, we’ve helped 10k+ job seekers.</p>
+        <p><i class="fas fa-globe"></i> jobconnect.example · <i class="fab fa-linkedin"></i> @jobconnect</p>
+      </div>
+    </div>
+    <div style="background: #f0f6fe; border-radius: 2rem; padding: 1.5rem;">
+      <h4>Why work with us?</h4>
+      <ul style="list-style: none; display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 0.5rem;">
+        <li>✅ Remote-first culture</li>
+        <li>✅ Career growth</li>
+        <li>✅ Diversity & inclusion</li>
+        <li>✅ 4-day work week</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- JOB LISTINGS with filter & search -->
+  <section id="page-listings" class="page">
+    <h2>Job listings</h2>
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="🔍 Search job title..." oninput="filterJobs()">
+      <select id="filterSelect" onchange="filterJobs()">
+        <option value="all">All categories</option>
+        <option value="engineering">Engineering</option>
+        <option value="design">Design</option>
+        <option value="marketing">Marketing</option>
+        <option value="finance">Finance</option>
+        <option value="hr">HR</option>
+      </select>
+      <button onclick="filterJobs()"><i class="fas fa-sliders-h"></i> Filter</button>
+    </div>
+    <div class="job-grid" id="jobListingsGrid"></div>
+  </section>
+
+  <!-- JOB DETAILS -->
+  <section id="page-details" class="page">
+    <h2><i class="fas fa-file-alt"></i> Job Details</h2>
+    <div id="jobDetailContainer" style="background: #fafcff; padding: 2rem; border-radius: 2rem; border:1px solid #e2eaf5;">
+      <h3 id="detailTitle">Frontend Developer</h3>
+      <p><strong>Company:</strong> <span id="detailCompany">TechCorp</span>  · <span id="detailLocation">Remote</span></p>
+      <p><span id="detailCategory">Engineering</span> · <span id="detailType">Full-time</span></p>
+      <p style="margin: 1.5rem 0;" id="detailDesc">Build amazing interfaces with React & Vue. Join a creative team.</p>
+      <button class="btn" onclick="navigateTo('listings')">← Back to listings</button>
+      <button class="btn" style="margin-left:1rem;" onclick="openApply()"><i class="fas fa-paper-plane"></i> Apply now</button>
+    </div>
+    <!-- application interface (embedded in details) -->
+    <div id="applySection" class="apply-section" style="display: none;">
+      <h4><i class="fas fa-edit"></i> Application</h4>
+      <form id="applyForm">
+        <input type="text" id="applicantName" placeholder="Full name *" required>
+        <input type="email" id="applicantEmail" placeholder="Email *" required>
+        <textarea id="applicantMessage" rows="3" placeholder="Why are you a great fit? (optional)"></textarea>
+        <button type="submit" class="btn" id="submitApplyBtn"><i class="fas fa-check"></i> Submit application</button>
+      </form>
+      <div id="applyFeedback" style="margin-top: 1rem;"></div>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="page-register" class="page">
+    <h2><i class="fas fa-user-plus"></i> Register</h2>
+    <div style="max-width: 460px;">
+      <input type="text" placeholder="Full name" style="width:100%; padding:0.8rem 1rem; border-radius:40px; border:1px solid #d4dfeb; margin:0.5rem 0;">
+      <input type="email" placeholder="Email address" style="width:100%; padding:0.8rem 1rem; border-radius:40px; border:1px solid #d4dfeb; margin:0.5rem 0;">
+      <input type="password" placeholder="Password" style="width:100%; padding:0.8rem 1rem; border-radius:40px; border:1px solid #d4dfeb; margin:0.5rem 0;">
+      <button class="btn" style="width:100%;">Create account</button>
+      <p style="margin-top:1rem;">Already have an account? <a href="#" onclick="navigateTo('login')">Login</a></p>
+    </div>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="page-login" class="page">
+    <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+    <div style="max-width: 400px;">
+      <input type="email" placeholder="Email" style="width:100%; padding:0.8rem 1rem; border-radius:40px; border:1px solid #d4dfeb; margin:0.5rem 0;">
+      <input type="password" placeholder="Password" style="width:100%; padding:0.8rem 1rem; border-radius:40px; border:1px solid #d4dfeb; margin:0.5rem 0;">
+      <button class="btn" style="width:100%;">Sign in</button>
+      <p style="margin-top:1rem;">New? <a href="#" onclick="navigateTo('register')">Register</a></p>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="page-dashboard" class="page">
+    <h2><i class="fas fa-columns"></i> Applicant Dashboard</h2>
+    <div class="dashboard-stats">
+      <div class="stat-card"><strong>4</strong> applied</div>
+      <div class="stat-card"><strong>2</strong> in review</div>
+      <div class="stat-card"><strong>1</strong> interview</div>
+    </div>
+    <div style="background:#f8faff; border-radius: 1.5rem; padding:1rem 1.5rem; border:1px solid #e2eaf5;">
+      <p><i class="fas fa-clock" style="color:#28570b;"></i> Recent activity: Applied to "Frontend Developer" at TechCorp (2 days ago)</p>
+      <p><i class="fas fa-check-circle" style="color:#0a7a4b;"></i> Application for "UX Designer" - under review</p>
+    </div>
+    <div class="notification" style="margin-top:1.5rem;">
+      <span><i class="fas fa-bell"></i> You have a new message from Recruiter</span>
+      <span style="font-weight:300;">⭐</span>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="page-contact" class="page">
+    <h2><i class="fas fa-phone-alt"></i> Contact</h2>
+    <div class="contact-info">
+      <div><i class="fas fa-envelope" style="font-size:2rem;"></i> <p>support@jobconnect.example</p></div>
+      <div><i class="fas fa-phone" style="font-size:2rem;"></i> <p>+250 793086729</p></div>
+      <div><i class="fas fa-map-marker-alt" style="font-size:2rem;"></i> <p>Remote · Global</p></div>
+    </div>
+    <div style="background:#fafcff; border-radius:2rem; padding:2rem;">
+      <p><i class="fas fa-headset"></i> We’re here to help. Send a message or call during business hours.</p>
+      <button class="btn" style="margin-top:0.5rem;"><i class="fas fa-paper-plane"></i> Send message</button>
+    </div>
+  </section>
+
+  <!-- notification banner (dynamic) -->
+  <div id="notificationBanner" class="notification" style="display: none;">
+    <span id="notifText"><i class="fas fa-info-circle"></i> Notification</span>
+    <button style="background:transparent; border:none; color:white; font-size:1.2rem;" onclick="dismissNotification()">✕</button>
+  </div>
+
+  <div class="footer-note">© 2026 JobConnect · all opportunities</div>
+</div>
+
+<!-- external JS (simulated) -->
+<script>
+  // ---------- DATA ----------
+  const jobs = [
+    { id: 1, title: 'Frontend Developer', company: 'TechCorp', location: 'Remote', category: 'engineering', type: 'Full-time', description: 'Build user interfaces with React and Vue. Join a fast-growing team.' },
+    { id: 2, title: 'UX Designer', company: 'DesignLab', location: 'New York, NY', category: 'design', type: 'Contract', description: 'Design intuitive experiences for mobile and web.' },
+    { id: 3, title: 'Marketing Specialist', company: 'GrowthHack', location: 'Austin, TX', category: 'marketing', type: 'Full-time', description: 'Lead campaigns for B2B SaaS products.' },
+    { id: 4, title: 'Data Analyst', company: 'Finlytics', location: 'Chicago, IL', category: 'finance', type: 'Part-time', description: 'Analyze financial data and create dashboards.' },
+    { id: 5, title: 'HR Coordinator', company: 'PeopleFirst', location: 'Remote', category: 'hr', type: 'Full-time', description: 'Support recruitment and employee engagement.' },
+    { id: 6, title: 'DevOps Engineer', company: 'CloudNet', location: 'San Francisco', category: 'engineering', type: 'Full-time', description: 'Manage AWS infrastructure and CI/CD.' },
+  ];
+
+  let currentJobId = 1;
+  let appliedJobs = [];
+
+  // ---------- RENDER FUNCTIONS ----------
+  function renderJobCards(containerId, jobList) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = jobList.map(j => `
+      <div class="job-card">
+        <h3>${j.title}</h3>
+        <div class="company-tag"><i class="fas fa-building"></i> ${j.company}</div>
+        <div class="job-meta"><span>${j.location}</span> <span>${j.type}</span></div>
+        <button class="btn" onclick="viewJobDetails(${j.id})"><i class="fas fa-eye"></i> Details</button>
+        <button class="btn btn-outline" onclick="quickApply(${j.id})" style="margin-left:8px;"><i class="fas fa-paper-plane"></i> Apply</button>
+      </div>
+    `).join('');
+  }
+
+  function renderHome() {
+    const homeGrid = document.getElementById('homeJobGrid');
+    if (homeGrid) {
+      const preview = jobs.slice(0, 3);
+      homeGrid.innerHTML = preview.map(j => `
+        <div class="job-card">
+          <h3>${j.title}</h3>
+          <div class="company-tag"><i class="fas fa-building"></i> ${j.company}</div>
+          <div class="job-meta"><span>${j.location}</span> <span>${j.type}</span></div>
+          <button class="btn" onclick="viewJobDetails(${j.id})">View</button>
+        </div>
+      `).join('');
+    }
+  }
+
+  function renderListings(filteredJobs) {
+    const list = filteredJobs || jobs;
+    renderJobCards('jobListingsGrid', list);
+  }
+
+  // ---------- FILTER & SEARCH ----------
+  function filterJobs() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const category = document.getElementById('filterSelect').value;
+    let filtered = jobs.filter(j => {
+      const matchTitle = j.title.toLowerCase().includes(searchTerm);
+      const matchCategory = category === 'all' || j.category === category;
+      return matchTitle && matchCategory;
+    });
+    renderListings(filtered);
+    // notification: show count
+    showNotification(`Found ${filtered.length} job${filtered.length !== 1 ? 's' : ''}`);
+  }
+
+  // ---------- NAVIGATION ----------
+  function navigateTo(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+    const target = document.getElementById(`page-${pageId}`);
+    if (target) target.classList.add('active-page');
+    document.querySelectorAll('.nav-links button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.nav-links button').forEach(btn => {
+      if (btn.dataset.page === pageId) btn.classList.add('active');
+    });
+    // If listings, render
+    if (pageId === 'listings') renderListings(jobs);
+    if (pageId === 'home') renderHome();
+    if (pageId === 'details') updateDetailsView(currentJobId);
+  }
+
+  // attach nav clicks
+  document.querySelectorAll('.nav-links button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigateTo(btn.dataset.page);
+    });
+  });
+
+  // ---------- JOB DETAILS ----------
+  function viewJobDetails(id) {
+    currentJobId = id;
+    navigateTo('details');
+    updateDetailsView(id);
+  }
+
+  function updateDetailsView(id) {
+    const job = jobs.find(j => j.id === id);
+    if (!job) return;
+    document.getElementById('detailTitle').textContent = job.title;
+    document.getElementById('detailCompany').textContent = job.company;
+    document.getElementById('detailLocation').textContent = job.location;
+    document.getElementById('detailCategory').textContent = job.category;
+    document.getElementById('detailType').textContent = job.type;
+    document.getElementById('detailDesc').textContent = job.description;
+    document.getElementById('applySection').style.display = 'none';
+  }
+
+  // ---------- APPLICATION (validation + notification) ----------
+  function openApply() {
+    const section = document.getElementById('applySection');
+    if (section) section.style.display = 'block';
+    document.getElementById('applyFeedback').innerHTML = '';
+  }
+
+  document.getElementById('applyForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('applicantName').value.trim();
+    const email = document.getElementById('applicantEmail').value.trim();
+    const msg = document.getElementById('applicantMessage').value.trim();
+    const feedback = document.getElementById('applyFeedback');
+
+    if (!name || !email) {
+      feedback.innerHTML = '<span style="color:#b91c1c;"><i class="fas fa-exclamation-circle"></i> Name and email are required.</span>';
+      showNotification('Please fill all required fields.', 'error');
+      return;
+    }
+    if (!email.includes('@') || !email.includes('.')) {
+      feedback.innerHTML = '<span style="color:#b91c1c;"><i class="fas fa-exclamation-circle"></i> Enter a valid email.</span>';
+      showNotification('Invalid email address.', 'error');
+      return;
+    }
+
+    // success
+    feedback.innerHTML = `<span style="color:#0a7a4b;"><i class="fas fa-check-circle"></i> Application submitted for "${jobs.find(j=>j.id===currentJobId)?.title}"!</span>`;
+    appliedJobs.push(currentJobId);
+    showNotification(`✅ Application sent to ${jobs.find(j=>j.id===currentJobId)?.company}`);
+    document.getElementById('applyForm').reset();
+    // close apply section after success? keep open
+  });
+
+  // quick apply from card
+  function quickApply(id) {
+    const job = jobs.find(j => j.id === id);
+    if (!job) return;
+    if (appliedJobs.includes(id)) {
+      showNotification(`You already applied to ${job.title}`, 'info');
+      return;
+    }
+    // simulate quick apply
+    appliedJobs.push(id);
+    showNotification(`✅ Quick apply to ${job.title} at ${job.company} (profile used)`);
+  }
+
+  // ---------- NOTIFICATION SYSTEM ----------
+  function showNotification(message, type = 'info') {
+    const banner = document.getElementById('notificationBanner');
+    const text = document.getElementById('notifText');
+    banner.style.display = 'flex';
+    if (type === 'error') {
+      banner.style.background = '#b91c1c';
+    } else if (type === 'info') {
+      banner.style.background = '#0a4b7a';
+    } else {
+      banner.style.background = '#0a4b7a';
+    }
+    text.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+    setTimeout(() => {
+      banner.style.display = 'none';
+    }, 5000);
+  }
+
+  function dismissNotification() {
+    document.getElementById('notificationBanner').style.display = 'none';
+  }
+
+  // ---------- INIT ----------
+  renderHome();
+  renderListings(jobs);
+  // set default details
+  updateDetailsView(1);
+
+  // expose to global
+  window.navigateTo = navigateTo;
+  window.viewJobDetails = viewJobDetails;
+  window.quickApply = quickApply;
+  window.filterJobs = filterJobs;
+  window.openApply = openApply;
+  window.dismissNotification = dismissNotification;
+  window.showNotification = showNotification;
+</script>
+</body>
+</html>
